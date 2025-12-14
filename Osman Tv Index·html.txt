@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشغل عثمان تيفي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Cairo',sans-serif;background:#0f172a;color:#fff;}
+header{padding:14px;text-align:center;background:linear-gradient(90deg,#ff416c,#ff4b2b);font-size:18px;font-weight:700;}
+.player-container{max-width:1000px;margin:20px auto;padding:15px;}
+.match-info{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:15px;border-radius:16px;margin-bottom:15px;}
+.team{width:40%;text-align:center;}
+.team img{width:60px;height:60px;border-radius:50%;}
+.vs{font-size:22px;font-weight:700;}
+video{width:100%;border-radius:18px;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.7);}
+.qualities{display:flex;gap:10px;justify-content:center;margin-top:15px;}
+.qualities button{padding:10px 18px;border:none;border-radius:12px;background:#334155;color:#fff;font-weight:700;cursor:pointer;}
+.qualities button.active{background:#22c55e;}
+.back{margin-top:20px;text-align:center;}
+.back button{background:#ff4b2b;border:none;padding:10px 22px;border-radius:14px;font-size:15px;color:#fff;cursor:pointer;}
+</style>
+</head>
+<body>
+<header>مشغل عثمان تيفي</header>
+<div class="player-container">
+<div class="match-info">
+<div class="team"><img id="t1img"><div id="t1name"></div></div>
+<div class="vs">VS</div>
+<div class="team"><img id="t2img"><div id="t2name"></div></div>
+</div>
+<video id="player" controls autoplay></video>
+<div class="qualities">
+<button onclick="play('FHD')">FHD</button>
+<button onclick="play('HD')">HD</button>
+<button onclick="play('SD')">SD</button>
+</div>
+<div class="back">
+<button onclick="history.back()">⟵ الرجوع لجدول المباريات</button>
+</div>
+</div>
+<script>
+const urlParams=new URLSearchParams(location.search);
+const matchId=urlParams.get('id');
+
+const MATCHES={
+  m_mor_uae:{team1:{name:'المغرب',img:'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg'},team2:{name:'الإمارات',img:'https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
+  m_ksa_jor:{team1:{name:'السعودية',img:'https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg'},team2:{name:'الأردن',img:'https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
+  m_spain_italy:{team1:{name:'إسبانيا',img:'https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg'},team2:{name:'إيطاليا',img:'https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
+  m_france_germany:{team1:{name:'فرنسا',img:'https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg'},team2:{name:'ألمانيا',img:'https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
+  m_brazil_argentina:{team1:{name:'البرازيل',img:'https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Brazil.svg'},team2:{name:'الأرجنتين',img:'https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}}
+};
+
+const matchData=MATCHES[matchId];
+if(!matchData){alert('المباراة غير متوفرة');}
+document.getElementById('t1name').textContent=matchData.team1.name;
+document.getElementById('t2name').textContent=matchData.team2.name;
+document.getElementById('t1img').src=matchData.team1.img;
+document.getElementById('t2img').src=matchData.team2.img;
+
+function play(q){
+  document.querySelectorAll('.qualities button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  const v=document.getElementById('player');
+  v.src=matchData.streams[q];
+  v.play();
+}
+play('HD');
+</script>
+</body>
+</html>

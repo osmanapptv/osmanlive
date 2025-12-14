@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>عثمان تيفي — جدول المباريات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Cairo',sans-serif;background:#0f172a;color:#fff;}
+header{position:fixed;top:0;left:0;right:0;height:65px;background:linear-gradient(90deg,#ff416c,#ff4b2b);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;box-shadow:0 4px 20px rgba(0,0,0,0.5);z-index:200;}
+.back-btn{position:absolute;right:15px;cursor:pointer;color:#fff;font-size:16px;background:rgba(0,0,0,0.25);padding:6px 14px;border-radius:12px;}
+#page{position:absolute;top:65px;bottom:0;left:0;right:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center;gap:25px;padding:15px 0;}
+.match-card{background:#1e293b;border-radius:16px;width:96%;max-width:800px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 8px 25px rgba(0,0,0,0.6);cursor:pointer;transition:transform 0.3s;}
+.match-teams{display:flex;justify-content:space-between;align-items:center;}
+.team{width:42%;text-align:center;background:rgba(255,255,255,0.03);padding:12px;border-radius:14px;}
+.team img{width:70px;height:70px;border-radius:50%;margin-bottom:10px;}
+.match-status{width:18%;text-align:center;padding:8px;border-radius:10px;font-weight:700;}
+.match-card[data-status="live"] .match-status{background:#ff4b2b;}
+.match-card[data-status="upcoming"] .match-status{background:#4facfe;}
+.match-card[data-status="finished"] .match-status{background:#555;}
+.match-details{display:flex;justify-content:space-around;flex-wrap:wrap;gap:8px;font-size:14px;}
+.match-details span{background:rgba(255,255,255,0.05);padding:5px 8px;border-radius:6px;}
+</style>
+</head>
+<body>
+<header>
+<div class="back-btn" onclick="goHome()">⟵ رجوع</div>
+<span>عثمان تيفي</span>
+</header>
+<div id="page"></div>
+<script>
+const HOME_URL = "go:zz";
+function goHome(){ location.href = HOME_URL; }
+history.pushState(null,"",location.href);
+window.onpopstate = goHome;
+
+const matches=[
+{ id:"m_mor_uae", team1:{name:"المغرب",img:"https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg"}, team2:{name:"الإمارات",img:"https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg"}, startTime:"2025-12-14T16:30", endTime:"2025-12-14T18:20", commentator:"خالد الحدي", league:"مباراة دولية", channel:"AL KASS 1", link:"player.html?id=m_mor_uae" },
+{ id:"m_ksa_jor", team1:{name:"السعودية",img:"https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg"}, team2:{name:"الأردن",img:"https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg"}, startTime:"2025-12-14T19:30", endTime:"2025-12-14T21:20", commentator:"خليل البلوشي", league:"مباراة دولية", channel:"AL KASS 1", link:"player.html?id=m_ksa_jor" },
+{ id:"m_spain_italy", team1:{name:"إسبانيا",img:"https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg"}, team2:{name:"إيطاليا",img:"https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg"}, startTime:"2025-12-15T18:00", endTime:"2025-12-15T20:00", commentator:"محمد بركات", league:"الدوري الأوروبي", channel:"AL KASS 2", link:"player.html?id=m_spain_italy" },
+{ id:"m_france_germany", team1:{name:"فرنسا",img:"https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg"}, team2:{name:"ألمانيا",img:"https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg"}, startTime:"2025-12-15T21:30", endTime:"2025-12-15T23:30", commentator:"أحمد فؤاد", league:"الدوري الأوروبي", channel:"AL KASS 2", link:"player.html?id=m_france_germany" },
+{ id:"m_brazil_argentina", team1:{name:"البرازيل",img:"https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Brazil.svg"}, team2:{name:"الأرجنتين",img:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"}, startTime:"2025-12-16T17:00", endTime:"2025-12-16T19:00", commentator:"حفيظ دراجي", league:"كوبا أمريكا", channel:"AL KASS 3", link:"player.html?id=m_brazil_argentina" }
+];
+
+function sortMatchesByStatus(list){
+  const now=new Date();
+  return [...list].sort((a,b)=>{
+    const status = m => now < new Date(m.startTime)?1:now<=new Date(m.endTime)?0:2;
+    return status(a)-status(b) || new Date(a.startTime)-new Date(b.startTime);
+  });
+}
+
+function renderMatches(){
+  const container=document.getElementById("page");
+  function update(){
+    container.innerHTML="";
+    sortMatchesByStatus(matches).forEach(m=>{
+      const d=document.createElement("div");
+      d.className="match-card";
+      d.onclick=()=>location.href=m.link;
+      d.innerHTML=`
+        <div class="match-teams">
+          <div class="team"><img src="${m.team1.img}"><div>${m.team1.name}</div></div>
+          <div class="match-status" id="s_${m.id}">⚽</div>
+          <div class="team"><img src="${m.team2.img}"><div>${m.team2.name}</div></div>
+        </div>
+        <div class="match-details">
+          <span>🎙 ${m.commentator}</span>
+          <span>🏆 ${m.league}</span>
+          <span>▶ ${m.channel}</span>
+        </div>`;
+      container.appendChild(d);
+      const now=new Date(), start=new Date(m.startTime), end=new Date(m.endTime);
+      const s=d.querySelector('.match-status');
+      if(now<start){d.dataset.status="upcoming";s.textContent="لم تبدأ";}
+      else if(now<=end){d.dataset.status="live";s.textContent="جارية الآن";}
+      else{d.dataset.status="finished";s.textContent="انتهت";}
+    });
+  }
+  update();
+  setInterval(update,1000);
+}
+renderMatches();
+</script>
+</body>
+</html>
