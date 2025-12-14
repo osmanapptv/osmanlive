@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>عثمان تيفي — جدول المباريات</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عثمان تيفي — جدول المباريات و المشغل</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 body{margin:0;font-family:'Cairo',sans-serif;background:#0f172a;color:#fff;}
@@ -20,6 +20,16 @@ header{position:fixed;top:0;left:0;right:0;height:65px;background:linear-gradien
 .match-card[data-status="finished"] .match-status{background:#555;}
 .match-details{display:flex;justify-content:space-around;flex-wrap:wrap;gap:8px;font-size:14px;}
 .match-details span{background:rgba(255,255,255,0.05);padding:5px 8px;border-radius:6px;}
+/* مشغل */
+.player-container{max-width:1000px;margin:20px auto;padding:15px;display:none;}
+.match-info{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:15px;border-radius:16px;margin-bottom:15px;}
+.vs{font-size:22px;font-weight:700;}
+video{width:100%;border-radius:18px;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.7);}
+.qualities{display:flex;gap:10px;justify-content:center;margin-top:15px;}
+.qualities button{padding:10px 18px;border:none;border-radius:12px;background:#334155;color:#fff;font-weight:700;cursor:pointer;}
+.qualities button.active{background:#22c55e;}
+.back{margin-top:20px;text-align:center;}
+.back button{background:#ff4b2b;border:none;padding:10px 22px;border-radius:14px;font-size:15px;color:#fff;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -28,24 +38,42 @@ header{position:fixed;top:0;left:0;right:0;height:65px;background:linear-gradien
 <span>عثمان تيفي</span>
 </header>
 <div id="page"></div>
+<div class="player-container" id="player-container">
+<div class="match-info">
+<div class="team"><img id="t1img"><div id="t1name"></div></div>
+<div class="vs">VS</div>
+<div class="team"><img id="t2img"><div id="t2name"></div></div>
+</div>
+<video id="player" controls autoplay></video>
+<div class="qualities">
+<button onclick="play('FHD')">FHD</button>
+<button onclick="play('HD')">HD</button>
+<button onclick="play('SD')">SD</button>
+</div>
+<div class="back">
+<button onclick="showTable()">⟵ الرجوع لجدول المباريات</button>
+</div>
+</div>
 <script>
-const HOME_URL = "go:zz";
+const HOME_URL="go:zz";
 function goHome(){ location.href = HOME_URL; }
 history.pushState(null,"",location.href);
-window.onpopstate = goHome;
+window.onpopstate=goHome;
 
 const matches=[
-{ id:"m_mor_uae", team1:{name:"المغرب",img:"https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg"}, team2:{name:"الإمارات",img:"https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg"}, startTime:"2025-12-14T16:30", endTime:"2025-12-14T18:20", commentator:"خالد الحدي", league:"مباراة دولية", channel:"AL KASS 1", link:"player.html?id=m_mor_uae" },
-{ id:"m_ksa_jor", team1:{name:"السعودية",img:"https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg"}, team2:{name:"الأردن",img:"https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg"}, startTime:"2025-12-14T19:30", endTime:"2025-12-14T21:20", commentator:"خليل البلوشي", league:"مباراة دولية", channel:"AL KASS 1", link:"player.html?id=m_ksa_jor" },
-{ id:"m_spain_italy", team1:{name:"إسبانيا",img:"https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg"}, team2:{name:"إيطاليا",img:"https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg"}, startTime:"2025-12-15T18:00", endTime:"2025-12-15T20:00", commentator:"محمد بركات", league:"الدوري الأوروبي", channel:"AL KASS 2", link:"player.html?id=m_spain_italy" },
-{ id:"m_france_germany", team1:{name:"فرنسا",img:"https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg"}, team2:{name:"ألمانيا",img:"https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg"}, startTime:"2025-12-15T21:30", endTime:"2025-12-15T23:30", commentator:"أحمد فؤاد", league:"الدوري الأوروبي", channel:"AL KASS 2", link:"player.html?id=m_france_germany" },
-{ id:"m_brazil_argentina", team1:{name:"البرازيل",img:"https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Brazil.svg"}, team2:{name:"الأرجنتين",img:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"}, startTime:"2025-12-16T17:00", endTime:"2025-12-16T19:00", commentator:"حفيظ دراجي", league:"كوبا أمريكا", channel:"AL KASS 3", link:"player.html?id=m_brazil_argentina" }
+{ id:"m_mor_uae", team1:{name:"المغرب",img:"https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg"}, team2:{name:"الإمارات",img:"https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg"}, startTime:"2025-12-14T16:30", endTime:"2025-12-14T18:20", commentator:"خالد الحدي", league:"مباراة دولية", channel:"AL KASS 1", link:"m_mor_uae" },
+{ id:"m_ksa_jor", team1:{name:"السعودية",img:"https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg"}, team2:{name:"الأردن",img:"https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg"}, startTime:"2025-12-14T19:30", endTime:"2025-12-14T21:20", commentator:"خليل البلوشي", league:"مباراة دولية", channel:"AL KASS 1", link:"m_ksa_jor" }
 ];
+
+const MATCHES={
+  m_mor_uae:{team1:{name:'المغرب',img:'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg'},team2:{name:'الإمارات',img:'https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg'},streams:{FHD:'http://auziatv.com:8080/osman/OsmanHaroun12/5372',HD:'http://auziatv.com:8080/osman/OsmanHaroun12/5372',SD:'http://auziatv.com:8080/osman/OsmanHaroun12/5372'}},
+  m_ksa_jor:{team1:{name:'السعودية',img:'https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg'},team2:{name:'الأردن',img:'https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg'},streams:{FHD:'https://example.com/ksa_jor_fhd.m3u8',HD:'https://example.com/ksa_jor_hd.m3u8',SD:'https://example.com/ksa_jor_sd.m3u8'}}
+};
 
 function sortMatchesByStatus(list){
   const now=new Date();
   return [...list].sort((a,b)=>{
-    const status = m => now < new Date(m.startTime)?1:now<=new Date(m.endTime)?0:2;
+    const status=m=>now<new Date(m.startTime)?1:now<=new Date(m.endTime)?0:2;
     return status(a)-status(b) || new Date(a.startTime)-new Date(b.startTime);
   });
 }
@@ -57,18 +85,8 @@ function renderMatches(){
     sortMatchesByStatus(matches).forEach(m=>{
       const d=document.createElement("div");
       d.className="match-card";
-      d.onclick=()=>location.href=m.link;
-      d.innerHTML=`
-        <div class="match-teams">
-          <div class="team"><img src="${m.team1.img}"><div>${m.team1.name}</div></div>
-          <div class="match-status" id="s_${m.id}">⚽</div>
-          <div class="team"><img src="${m.team2.img}"><div>${m.team2.name}</div></div>
-        </div>
-        <div class="match-details">
-          <span>🎙 ${m.commentator}</span>
-          <span>🏆 ${m.league}</span>
-          <span>▶ ${m.channel}</span>
-        </div>`;
+      d.onclick=()=>openPlayer(m.link);
+      d.innerHTML=`<div class="match-teams"><div class="team"><img src="${m.team1.img}"><div>${m.team1.name}</div></div><div class="match-status" id="s_${m.id}">⚽</div><div class="team"><img src="${m.team2.img}"><div>${m.team2.name}</div></div></div><div class="match-details"><span>🎙 ${m.commentator}</span><span>🏆 ${m.league}</span><span>▶ ${m.channel}</span></div>`;
       container.appendChild(d);
       const now=new Date(), start=new Date(m.startTime), end=new Date(m.endTime);
       const s=d.querySelector('.match-status');
@@ -80,6 +98,33 @@ function renderMatches(){
   update();
   setInterval(update,1000);
 }
+
+function openPlayer(id){
+  document.getElementById('page').style.display='none';
+  document.getElementById('player-container').style.display='block';
+  const matchData=MATCHES[id];
+  if(!matchData){alert('المباراة غير متوفرة');return;}
+  document.getElementById('t1name').textContent=matchData.team1.name;
+  document.getElementById('t2name').textContent=matchData.team2.name;
+  document.getElementById('t1img').src=matchData.team1.img;
+  document.getElementById('t2img').src=matchData.team2.img;
+  play('HD', matchData);
+}
+
+function play(q, matchData=null){
+  if(!matchData) matchData=MATCHES[Object.keys(MATCHES)[0]];
+  document.querySelectorAll('.qualities button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  const v=document.getElementById('player');
+  v.src=matchData.streams[q];
+  v.play();
+}
+
+function showTable(){
+  document.getElementById('player-container').style.display='none';
+  document.getElementById('page').style.display='flex';
+}
+
 renderMatches();
 </script>
 </body>
