@@ -44,7 +44,7 @@ const urlParams=new URLSearchParams(location.search);
 const matchId=urlParams.get('id');
 
 const MATCHES={
-  m_mor_uae:{team1:{name:'المغرب',img:'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg'},team2:{name:'الإمارات',img:'https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
+  m_mor_uae:{team1:{name:'المغرب',img:'https://upload.wikimedia.org/wikipedia/commons/2/2c/Flag_of_Morocco.svg'},team2:{name:'الإمارات',img:'https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg'},streams:{FHD:'http://auziatv.com:8080/osman/OsmanHaroun12/5372',HD:'http://auziatv.com:8080/osman/OsmanHaroun12/5372',SD:'http://auziatv.com:8080/osman/OsmanHaroun12/5372'}},
   m_ksa_jor:{team1:{name:'السعودية',img:'https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg'},team2:{name:'الأردن',img:'https://upload.wikimedia.org/wikipedia/commons/c/c0/Flag_of_Jordan.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
   m_spain_italy:{team1:{name:'إسبانيا',img:'https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg'},team2:{name:'إيطاليا',img:'https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
   m_france_germany:{team1:{name:'فرنسا',img:'https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg'},team2:{name:'ألمانيا',img:'https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg'},streams:{FHD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',HD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',SD:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'}},
@@ -68,4 +68,5 @@ function play(q){
 play('HD');
 </script>
 </body>
+
 </html>
